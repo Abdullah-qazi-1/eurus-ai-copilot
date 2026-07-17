@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Eurus AI Employee Copilot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">EU</div>
+      <div class="brand-text">
+        <div class="brand-name">EURUS</div>
+        <div class="brand-sub">AI Employee Copilot</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <button class="nav-item active" data-view="chat">
+        <span class="nav-idx">01</span>
+        <span>Knowledge Q&A</span>
+      </button>
+      <button class="nav-item" data-view="proposal">
+        <span class="nav-idx">02</span>
+        <span>Proposal Generator</span>
+      </button>
+      <button class="nav-item" data-view="email">
+        <span class="nav-idx">03</span>
+        <span>Email Drafting</span>
+      </button>
+      <button class="nav-item" data-view="meeting">
+        <span class="nav-idx">04</span>
+        <span>Meeting Summarizer</span>
+      </button>
+      <button class="nav-item" data-view="ingest">
+        <span class="nav-idx">05</span>
+        <span>Knowledge Base</span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button id="settingsBtn" class="settings-btn">
+        <span class="dot" id="connDot"></span>
+        <span id="connLabel">Checking backend…</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ===== Main ===== -->
+  <main class="main">
+
+    <!-- ---- Chat / RAG view ---- -->
+    <section class="view active" id="view-chat">
+      <header class="view-header">
+        <h1>Knowledge Q&amp;A</h1>
+        <p>Ask anything grounded in Eurus Technologies' ingested website content.</p>
+      </header>
+
+      <div class="chat-window" id="chatWindow">
+        <div class="chat-empty" id="chatEmpty">
+          <p>No questions asked yet. Try:</p>
+          <button class="suggestion" data-q="Compare Eurus's DevOps and SRE services">Compare Eurus's DevOps and SRE services</button>
+          <button class="suggestion" data-q="What cloud solutions does Eurus offer?">What cloud solutions does Eurus offer?</button>
+          <button class="suggestion" data-q="Summarize Eurus's case studies">Summarize Eurus's case studies</button>
+        </div>
+      </div>
+
+      <form class="chat-input-row" id="chatForm">
+        <button type="button" class="mic-btn" id="chatMicBtn" title="Ask by voice">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+        </button>
+        <input type="text" id="chatInput" placeholder="Ask a question about Eurus, or use the mic…" autocomplete="off" required />
+        <button type="submit" class="btn-primary">
+          <span class="btn-label">Ask</span>
+          <span class="spinner" hidden></span>
+        </button>
+      </form>
+    </section>
+
+    <!-- ---- Proposal view ---- -->
+    <section class="view" id="view-proposal">
+      <header class="view-header">
+        <h1>Proposal Generator</h1>
+        <p>Generates a full structured proposal, grounded in Eurus's own service offerings.</p>
+      </header>
+
+      <form class="panel-form" id="proposalForm">
+        <label>
+          Client name
+          <input type="text" id="proposalClient" placeholder="e.g. Acme Retail Inc." required />
+        </label>
+        <label>
+          Requirement
+          <textarea id="proposalRequirement" rows="4" placeholder="e.g. Migrate our on-prem infrastructure to AWS with zero-downtime cutover" required></textarea>
+        </label>
+        <button type="submit" class="btn-primary">
+          <span class="btn-label">Generate proposal</span>
+          <span class="spinner" hidden></span>
+        </button>
+      </form>
+
+      <div class="result-panel" id="proposalResult" hidden>
+        <div class="result-header">
+          <h3>Draft proposal</h3>
+          <div class="result-actions">
+            <button class="btn-ghost" id="proposalCopy">Copy text</button>
+            <a class="btn-ghost" id="proposalPdfLink" href="#" download hidden>Download PDF</a>
+          </div>
+        </div>
+        <pre class="result-body" id="proposalText"></pre>
+      </div>
+    </section>
+
+    <!-- ---- Email view ---- -->
+    <section class="view" id="view-email">
+      <header class="view-header">
+        <h1>Email Drafting</h1>
+        <p>Drafts a professional email in the tone your situation needs.</p>
+      </header>
+
+      <form class="panel-form" id="emailForm">
+        <label>
+          Email type
+          <select id="emailType">
+            <option value="cold_outreach">Cold outreach</option>
+            <option value="reply">Reply</option>
+            <option value="follow_up">Follow up</option>
+            <option value="meeting_confirmation">Meeting confirmation</option>
+          </select>
+        </label>
+        <label>
+          Context
+          <textarea id="emailContext" rows="3" placeholder="e.g. Confirm the 6-week project timeline and next steps" required></textarea>
+        </label>
+        <label id="incomingEmailWrap">
+          Incoming email (if replying)
+          <textarea id="emailIncoming" rows="4" placeholder="Paste the email you're responding to…"></textarea>
+        </label>
+        <button type="submit" class="btn-primary">
+          <span class="btn-label">Draft email</span>
+          <span class="spinner" hidden></span>
+        </button>
+      </form>
+
+      <div class="result-panel" id="emailResult" hidden>
+        <div class="result-header">
+          <h3>Draft email</h3>
+          <div class="result-actions">
+            <button class="btn-ghost" id="emailCopy">Copy text</button>
+          </div>
+        </div>
+        <pre class="result-body" id="emailText"></pre>
+      </div>
+    </section>
+
+    <!-- ---- Meeting view ---- -->
+    <section class="view" id="view-meeting">
+      <header class="view-header">
+        <h1>Meeting Summarizer</h1>
+        <p>Record live or paste a transcript — get a summary plus clear action items.</p>
+      </header>
+
+      <!-- Upload full recording — captures every participant -->
+      <div class="live-rec-panel" id="uploadRecPanel">
+        <div class="live-rec-head">
+          <div class="live-rec-title">
+            <span class="rec-dot" id="uploadDot"></span>
+            <span id="uploadStatus">Upload a Zoom / Teams / Meet recording — captures every participant</span>
+          </div>
+        </div>
+        <div class="upload-row">
+          <input type="file" id="recordingFile" accept="audio/*,video/*" />
+          <button type="button" class="btn-primary btn-sm" id="uploadBtn">
+            <span class="btn-label">Transcribe &amp; summarize</span>
+            <span class="spinner" id="uploadSpinner" hidden></span>
+          </button>
+        </div>
+        <div class="live-preview" id="uploadHint">
+          MP4, MOV, MP3, WAV supported. This runs the full audio through Whisper on the
+          backend — larger files take longer (roughly real-time length or faster).
+        </div>
+      </div>
+
+      <div class="divider-text"><span>or use live captions (your mic only)</span></div>
+
+      <!-- Live recording panel (single microphone only — see note below) -->
+      <div class="live-rec-panel" id="liveRecPanel">
+        <div class="live-rec-head">
+          <div class="live-rec-title">
+            <span class="rec-dot" id="recDot"></span>
+            <span id="recStatus">Live transcript — not recording</span>
+          </div>
+          <div class="live-rec-actions">
+            <button type="button" class="btn-primary btn-sm" id="recStartBtn">Start recording</button>
+            <button type="button" class="btn-ghost btn-sm" id="recStopBtn" disabled>Stop</button>
+          </div>
+        </div>
+        <div class="live-preview" id="livePreview">Captures only your own microphone — use "Upload a recording" above to capture every participant on a call.</div>
+      </div>
+
+      <div class="divider-text"><span>or paste a transcript below</span></div>
+
+      <form class="panel-form" id="meetingForm">
+        <label>
+          Transcript
+          <textarea id="meetingTranscript" rows="10" placeholder="Paste the raw meeting transcript here, or use live recording above…" required></textarea>
+        </label>
+        <button type="submit" class="btn-primary">
+          <span class="btn-label">Summarize</span>
+          <span class="spinner" hidden></span>
+        </button>
+      </form>
+
+      <div class="result-panel" id="meetingResult" hidden>
+        <div class="result-header">
+          <h3>Summary &amp; action items</h3>
+          <div class="result-actions">
+            <button class="btn-ghost" id="meetingCopy">Copy text</button>
+          </div>
+        </div>
+        <pre class="result-body" id="meetingText"></pre>
+      </div>
+    </section>
+
+    <!-- ---- Ingest view ---- -->
+    <section class="view" id="view-ingest">
+      <header class="view-header">
+        <h1>Knowledge Base</h1>
+        <p>Feed a public Eurus URL into the RAG index. Returns chunk count on success.</p>
+      </header>
+
+      <form class="panel-form panel-form-inline" id="ingestForm">
+        <label class="grow">
+          URL
+          <input type="url" id="ingestUrl" placeholder="https://eurustechnologies.com/services/cloud-solutions/" required />
+        </label>
+        <button type="submit" class="btn-primary">
+          <span class="btn-label">Ingest</span>
+          <span class="spinner" hidden></span>
+        </button>
+      </form>
+
+      <div class="log-table">
+        <div class="log-table-head">
+          <span>Source</span>
+          <span>Chunks</span>
+          <span>Status</span>
+        </div>
+        <div id="ingestLog" class="log-table-body">
+          <div class="log-empty">No pages ingested this session yet.</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ===== Settings modal ===== -->
+<div class="modal-backdrop" id="settingsModal" hidden>
+  <div class="modal">
+    <h3>Backend connection</h3>
+    <p class="modal-sub">Base URL of your FastAPI backend (e.g. where <code>/api/v1/health</code> is served).</p>
+    <input type="text" id="apiBaseInput" placeholder="http://localhost:8000/api/v1" />
+    <div class="modal-actions">
+      <button class="btn-ghost" id="settingsCancel">Cancel</button>
+      <button class="btn-primary" id="settingsSave"><span class="btn-label">Save &amp; test</span></button>
+    </div>
+    <div class="modal-status" id="modalStatus"></div>
+  </div>
+</div>
+
+<!-- ===== Bottom activity console ===== -->
+<footer class="console" id="console">
+  <div class="console-title">
+    <span class="console-dot"></span> ACTIVITY LOG
+  </div>
+  <div class="console-lines" id="consoleLines"></div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
