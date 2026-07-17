@@ -110,11 +110,4 @@ eurus-ai-copilot/
 └── README.md
 ```
 
-## 7. Week-1 build order
-1. `core.config` + `llm.provider` (get one LLM call working end to end)
-2. `ingestion` + `embeddings` + `vectorstore` (populate Chroma from Eurus website)
-3. `rag.retriever` + `/chat` endpoint (grounded Q&A with citations)
-4. `agents.proposal_agent` + `pdf.exporter` + `/proposal` endpoint
-5. `agents.email_agent`, `agents.meeting_agent`
-6. Frontend chat UI wired to `/chat`
-7. Docker Compose + README + demo video
+
