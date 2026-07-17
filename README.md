@@ -78,10 +78,3 @@ another vector DB, or OpenAI for Groq, means touching one file
 (`vectorstore/chroma_store.py` or `services/llm/factory.py`), not the
 whole codebase.
 
-## Roadmap
-
-- [ ] Wire LangGraph into `agents/orchestrator.py` for free-form task routing
-- [ ] Add `/compare` endpoint (document diff)
-- [ ] Add SOP/internal-doc assistant mode
-- [ ] Record 2–3 min Loom demo
-- [ ] Deploy backend + frontend, add live demo link here
